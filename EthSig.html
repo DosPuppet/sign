@@ -1,0 +1,61 @@
+<style>
+  body {
+    background-color: cornsilk;
+  }
+</style>
+
+<pre>
+<p>
+Trust through ethereum blockchain (experimental testnet) : <br>
+    Register an account by signing your user and posting the signature on a network (twitter, facebook, reddit, a forum our your favorite BBS) <br>
+    Trust registry : <a href="https://explorer.bloc-fondations.fr/address/0xF35251d4D375808F13dd431Cf5AAF687aeEBDf7C" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0xF35251d4D375808F13dd431Cf5AAF687aeEBDf7C</a> <br>
+    Certify / verify with a trusted user : <a href="https://explorer.bloc-fondations.fr/address/0x09cc6a0Fc2df6AAB4f21A2E9A3bd1bA90d989031" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x09cc6a0Fc2df6AAB4f21A2E9A3bd1bA90d989031</a> <br>
+  </p>
+<p> 
+The tool below gives you Ethereum signature of a given message. Done with web3 libs via metamask (needs metamask installed). <br>
+</p>
+</pre>
+<label for="tosign">message to sign :</label>
+<input type="text" id="tosign" name="tosign" size="32">
+<button onClick="signMessage()">Sign</button> <br>
+<label for="hash">message hash :</label>
+<textarea id="hash" name="hash" cols="32" rows="2" readonly="readonly"></textarea>
+<label for="sig">signature :</label>
+<textarea id="sig" name="sig" cols="40" rows="4" readonly="readonly"></textarea>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js" integrity="sha512-/PTXSvaFzmO4So7Ghyq+DEZOz0sNLU4v1DP4gMOfY3kFu9L/IKoqSHZ6lNl3ZoZ7wT20io3vu/U4IchGcGIhfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  async function signMessage() {
+    if (!window.ethereum) return alert("Please Install Metamask");
+
+    // connect and get metamask account
+    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+
+    // message to sign
+    const message = document.getElementById("tosign").value;
+    //const message = "hello";
+    console.log({ message });
+
+    // hash message
+    const hashedMessage = Web3.utils.sha3(message);
+    console.log({ hashedMessage });
+    document.getElementById("hash").value = hashedMessage;
+
+    // sign hashed message
+    const signature = await ethereum.request({
+      method: "personal_sign",
+      params: [hashedMessage, accounts[0]],
+    });
+    console.log({ signature });
+    document.getElementById("sig").value = signature;
+
+    // split signature
+    const r = signature.slice(0, 66);
+    const s = "0x" + signature.slice(66, 130);
+    const v = parseInt(signature.slice(130, 132), 16);
+    console.log({ r, s, v });
+
+    alert(signature);
+  }
+</script>
