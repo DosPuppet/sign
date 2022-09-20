@@ -3,13 +3,13 @@
     background-color: cornsilk;
   }
 </style>
-
 <pre>
 <p>
 Trust through ethereum blockchain (experimental testnet) : <br>
     Register an account by signing your user and posting the signature on a network (twitter, facebook, reddit, a forum our your favorite BBS) <br>
-    Trust registry : <a href="https://explorer.bloc-fondations.fr/address/0xF35251d4D375808F13dd431Cf5AAF687aeEBDf7C" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0xF35251d4D375808F13dd431Cf5AAF687aeEBDf7C</a> <br>
-    Certify / verify with a trusted user : <a href="https://explorer.bloc-fondations.fr/address/0x09cc6a0Fc2df6AAB4f21A2E9A3bd1bA90d989031" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x09cc6a0Fc2df6AAB4f21A2E9A3bd1bA90d989031</a> <br>
+    Trust registry : <a href="https://explorer.bloc-fondations.fr/address/0x127B194f587aAB557de981aa68004B300F64C6A2" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x127B194f587aAB557de981aa68004B300F64C6A2</a> <br>
+    Certify / verify with a trusted user : <a href="https://explorer.bloc-fondations.fr/address/0x3ebcc333B0C6F0d9F5D19428b09a91Bc8Ab5385F" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x3ebcc333B0C6F0d9F5D19428b09a91Bc8Ab5385F</a> <br>
+    Datastore for certifications : <a href="https://explorer.bloc-fondations.fr/address/0xD4B80Ac7A811F83de2C11bD882604128986d75B5" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0xD4B80Ac7A811F83de2C11bD882604128986d75B5</a> <br>
   </p>
 <p> 
 The tool below gives you Ethereum signature of a given message. Done with web3 libs via metamask (needs metamask installed). <br>
@@ -19,9 +19,10 @@ The tool below gives you Ethereum signature of a given message. Done with web3 l
 <input type="text" id="tosign" name="tosign" size="32">
 <button onClick="signMessage()">Sign</button> <br>
 <label for="hash">message hash :</label>
-<textarea id="hash" name="hash" cols="32" rows="2" readonly="readonly"></textarea>
+<textarea id="hash" name="hash" cols="40" rows="2" readonly="readonly"></textarea>
 <label for="sig">signature :</label>
 <textarea id="sig" name="sig" cols="40" rows="4" readonly="readonly"></textarea>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.0-rc.0/web3.min.js" integrity="sha512-/PTXSvaFzmO4So7Ghyq+DEZOz0sNLU4v1DP4gMOfY3kFu9L/IKoqSHZ6lNl3ZoZ7wT20io3vu/U4IchGcGIhfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -56,6 +57,6 @@ The tool below gives you Ethereum signature of a given message. Done with web3 l
     const v = parseInt(signature.slice(130, 132), 16);
     console.log({ r, s, v });
 
-    alert(signature);
+    // alert(signature);
   }
 </script>
