@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <style>
   html, body {
-    background: rgb(245, 245, 245);
+    background: cornsilk;
     margin: 0;
     padding: 0;
   }
@@ -10,13 +10,13 @@
     overflow: hidden;
   }
   #top {
-    background: #283e4a;
+    background: cornsilk;
     height: 52px;
     width: 100%;
   }
   .box {
     border-radius: 3px;
-    box-shadow: 0px 0px 3px #777;
+    box-shadow: 0px 0px 3px cornsilk;
     background: white;
     max-width: 36em;
     margin: 0 auto;
@@ -24,7 +24,7 @@
     margin-bottom: 0.5em;
   }
   .color {
-    background: #2977b5;
+    background: cornsilk;
     height: 7em;
     width: 100%;
   }
@@ -72,7 +72,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gun/examples/jquery.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+<script src="sea.js"></script>
 
 <script>
 
@@ -95,7 +95,8 @@
 // override User functions to fix several issues
 // see https://github.com/amark/gun/issues/808
 
-SEA.Gun.User.prototype.grant = function grant(to, cb) {
+/*
+  SEA.Gun.User.prototype.grant = function grant(to, cb) {
   const gun  = this;       const user = gun.back(-1).user();
   const pair = user._.sea; let   path = '';
 
@@ -161,8 +162,9 @@ SEA.Gun.User.prototype.secret = function(data, cb) {
   return gun;
 }
 
+*/
 //var gun = Gun('http://localhost:8765/gun');
-var gun = Gun(['http://localhost:8765/gun', 'http://sign.hashpar.com/gun']);
+var gun = Gun(['http://localhost:8765/gun', 'https://gun.hashpar.com/gun']);
 var user = gun.user();
 var LI = {};
 
