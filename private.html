@@ -52,16 +52,20 @@
       <input id="pass" type="password" placeholder="passphrase">
       <input id="in" type="submit" value="sign in">
       <input id="up" type="button" value="sign up">
+      <input id="del" type="submit" value="delete">
     </form>
 
 
     <form id="profile" class="none">
       <h1>Profile</h1>
       <p>Data is privately encrypted by default. "+" to grant access, "x" to revoke access.</p>
-      <input id="name" placeholder="name"> <button>+</button><br/>
-      <input id="born" placeholder="born"> <button>+</button><br/>
-      <input id="edu" placeholder="education"> <button>+</button><br/>
-      <input id="skills" placeholder="skills"> <button>+</button><br/>
+      <input id="name" placeholder="Nom"> <button>+</button><br/>
+      <input id="surname" placeholder="Prénom"> <button>+</button><br/>
+      <input id="born" placeholder="Ville de naissance"> <button>+</button><br/>
+      <input id="edu" placeholder="Formation"> <button>+</button><br/>
+      <input id="skills" placeholder="Compétences"> <button>+</button><br/>
+      <input id="obj" placeholder="Objectifs"> <button>+</button><br/>
+      <input id="out" type="button" value="logout"></input>
     </form>
   </div>
 </div>
@@ -91,6 +95,8 @@
     finally { return _decrypt.apply(this, [data, ...args]); }
   }
 })();
+
+
 
 // override User functions to fix several issues
 // see https://github.com/amark/gun/issues/808
@@ -163,6 +169,8 @@ SEA.Gun.User.prototype.secret = function(data, cb) {
 }
 
 */
+
+
 //var gun = Gun('http://localhost:8765/gun');
 var gun = Gun(['http://localhost:8765/gun', 'https://gun.hashpar.com/gun']);
 var user = gun.user();
@@ -177,6 +185,12 @@ $('#up').on('click', function(e){
 $('#sign').on('submit', function(e){
 	e.preventDefault();
 	user.auth($('#alias').val(), $('#pass').val());
+});
+
+$('#del').on('submit', function(e){
+  e.preventDefault();
+  user.delete($('#alias').val(), $('#pass').val());
+  console.log($('#alias').val(), " deleted");
 });
 
 gun.on('auth', function(){
@@ -205,6 +219,14 @@ $('#profile button').on('click', async function(e){
   if(!confirm("You want to give access to " + who + "?")){ return }
   user.get('profile').get(id).grant(to);
 });
+
+$('#out').on('click', function(e){
+  e.preventDefault();
+  user.leave();
+  $('#profile').hide();
+	$('#sign').show();
+  $('#pub').val("");
+ })
 
 $('#search').on('blur', function(e){
   var s = LI.search = $(this).val();
