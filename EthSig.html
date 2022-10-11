@@ -15,16 +15,30 @@ Trust through ethereum blockchain (experimental testnet) : <br>
 The tool below gives you Ethereum signature of a given message. Done with web3 libs via metamask (needs metamask installed). <br>
 </p>
 </pre>
+<pre>
 <label for="ID">ID</label>
 <textarea id="ID" name="ID" cols="40" rows="1" readonly="readonly"></textarea>
 <button onClick="web3_metamask_login()">login</button> <br>
 <label for="tosign">message to sign :</label>
-<input type="text" id="tosign" name="tosign" size="32">
+<input type="text" id="tosign" name="tosign" size="32"></input>
 <button onClick="signMessage()">Sign</button> <br>
 <label for="hash">message hash :</label>
 <textarea id="hash" name="hash" cols="40" rows="2" readonly="readonly"></textarea>
 <label for="sig">signature :</label>
-<textarea id="sig" name="sig" cols="40" rows="4" readonly="readonly"></textarea>
+<textarea id="sig" name="sig" cols="40" rows="4" readonly="readonly"></textarea> <br>
+</pre>
+<pre>
+<p>
+Signature verification
+</p>
+<label for="verifySig">signature to sig_verify :</label>
+<textarea id="verifySig" name="verifySig" cols="40" rows="4"></textarea> <br>
+<label for="toverify">message to verify :</label>
+<input type="text" id="toverify" name="toverify" size="32"></input>
+<button onClick="sig_verify()">verify</button> <br>
+<label for="verifyAdd">adresse source :</label>
+<input type="text" id="verifyAdd" name="verifyAdd" size="32" readonly="readonly"></input>
+</pre>
 
 
 
@@ -113,5 +127,13 @@ The tool below gives you Ethereum signature of a given message. Done with web3 l
     console.log({ r, s, v });
 
     // alert(signature);
+}
+
+async function sig_verify() {
+      document.getElementById("verifyAdd").value = await ethereum.request({
+      method: "personal_ecRecover",
+      params: [Web3.utils.sha3(document.getElementById("toverify").value), document.getElementById("verifySig").value],
+    });
+
   }
 </script>
