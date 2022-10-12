@@ -36,7 +36,7 @@ Signature verification
 <label for="toverify">message to verify :</label>
 <input type="text" id="toverify" name="toverify" size="32"></input>
 <button onClick="sig_verify()">verify</button> <br>
-<label for="verifyAdd">adresse source :</label>
+<label for="verifyAdd">source :</label>
 <input type="text" id="verifyAdd" name="verifyAdd" size="32" readonly="readonly"></input>
 </pre>
 
@@ -63,7 +63,7 @@ Signature verification
     var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     var total_chars = chars.length;
     for (var i = 0; i < 256; i++) {
-      hashed_string += chars.charAt(Math.floor(Math.random() * total_chars));
+      hashed_string += chars.charAt(Math.floor(Math.random() * total_chars)); //Ne pas reproduire, cette cascade est a but demonstratif. En prod, utiliser une vrai fonction crypto !
     }
     return hashed_string;
   }
