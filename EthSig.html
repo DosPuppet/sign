@@ -44,6 +44,8 @@ Signature verification
 <button onClick="file_sig_verify()">verify</button> <br>
 <label for="verifyAdd">source :</label>
 <textarea id="verifyAdd" name="verifyAdd" cols="40" rows="1" readonly="readonly"></textarea>
+<label for="verifyUser">user :</label>
+<textarea id="verifyUser" name="verifyUser" cols="40" rows="1" readonly="readonly"></textarea>
 </pre>
 
 
@@ -79,7 +81,6 @@ Signature verification
     // Check first if the user has the MetaMask installed
     if (web3_check_metamask()) {
       console.log('Initate Login Process');
-
       // Get the Ethereum provider
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       // Get Ethereum accounts
@@ -88,7 +89,6 @@ Signature verification
       // Get the User Ethereum address
       const address = await provider.getSigner().getAddress();
       console.log(address);
-
       // Create hashed string 
       const hashed_string = web3_metamask_hash();
       console.log("Hashed string: " + hashed_string);
@@ -97,7 +97,60 @@ Signature verification
       // Got the signature
       console.log("The signature: " + signature);
 
-      document.getElementById("ID").value = address;
+      const contract = new ethers.Contract('0x4dc53BB8Df9a35a1F513163f202F4C7b93408E83',[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "add",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "user",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+], provider)
+
+      const targetAddress = address;
+      async function readMappingValue() {
+      try {
+    // Call the getter function for the mapping, providing the address as an argument
+      const result = await contract.user(targetAddress);
+
+    // Display the result
+      console.log('Value for Address', targetAddress, ':', result);
+      document.getElementById("ID").value = result;
+          } catch (error) {
+      console.error('Error reading mapping value:', error);
+      }
+    }
+    readMappingValue();
 
       // TODO
       // you can then send the signature to the webserver for further processing and verification 
@@ -194,20 +247,81 @@ async function sig_verify() {
   }
 
 async function file_sig_verify() {
-
-    const fileInput = document.getElementById('filetosign');
-    const selectedFile = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = async function (event) {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const fileInput = document.getElementById('filetoverify');
+  const selectedFile = fileInput.files[0];
+  const reader = new FileReader();
+  reader.onload = async function (event) {
                 const fileContent = event.target.result;
                 const buffer = new Uint8Array(fileContent);
                 const bufferHex = Array.from(buffer).map(byte => byte.toString(16).padStart(2, '0')).join('');
                 const hashedMessage = Web3.utils.sha3(`0x${bufferHex}`);
-                document.getElementById("verifyAdd").value = await ethereum.request({
+
+                const contract = new ethers.Contract('0x4dc53BB8Df9a35a1F513163f202F4C7b93408E83',[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "add",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "user",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+], provider)
+
+      const targetAddress = await ethereum.request({
                 method: "personal_ecRecover",
                 params: [hashedMessage, document.getElementById("verifySig").value],
                 });
-              }
-              reader.readAsArrayBuffer(selectedFile);
+      async function readMappingValue() {
+      try {
+    // Call the getter function for the mapping, providing the address as an argument
+      const result = await contract.user(targetAddress);
+
+    // Display the result
+      console.log('Value for Address', targetAddress, ':', result);
+      document.getElementById("verifyAdd").value = targetAddress;
+      document.getElementById("verifyUser").value = result;
+      //document.getElementById("ID").value = result;
+          } catch (error) {
+      console.error('Error reading mapping value:', error);
+      }
+    }
+    readMappingValue();
+                //document.getElementById("verifyAdd").value = await ethereum.request({
+                //method: "personal_ecRecover",
+                //params: [hashedMessage, document.getElementById("verifySig").value],
+                //});
+    }
+
+    reader.readAsArrayBuffer(selectedFile);
   }
 </script>
