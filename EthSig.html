@@ -25,8 +25,8 @@ The tool below gives you Ethereum signature of a given message. Done with web3 l
 <label for="filetosign">file to sign :</label>
 <input type="file" id="filetosign" name="filetosign" size="32"></input>
 <button onClick="signFile()">Sign file</button> <br>
-<label for="hash">message hash :</label>
-<textarea id="hash" name="hash" cols="40" rows="2" readonly="readonly"></textarea>
+<!-- <label for="hash">message hash :</label>
+<textarea id="hash" name="hash" cols="40" rows="2" readonly="readonly"></textarea> -->
 <label for="sig">signature :</label>
 <textarea id="sig" name="sig" cols="40" rows="4" readonly="readonly"></textarea> <br>
 </pre>
@@ -170,7 +170,7 @@ Signature verification
     // hash message
     const hashedMessage = Web3.utils.sha3(message);
     console.log({ hashedMessage });
-    document.getElementById("hash").value = hashedMessage;
+    //document.getElementById("hash").value = hashedMessage;
 
     // sign hashed message
     const signature = await ethereum.request({
@@ -206,7 +206,7 @@ reader.onload = async function (event) {
                 const hashedMessage = Web3.utils.sha3(`0x${bufferHex}`);
                 //const sha3Hash = Web3.utils.sha3(fileContent);
                 console.log({ hashedMessage });
-                document.getElementById("hash").value = hashedMessage;
+                //document.getElementById("hash").value = hashedMessage;
                 
                 // sign hashed message
                 const signature = await ethereum.request({
