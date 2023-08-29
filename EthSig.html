@@ -7,9 +7,9 @@
 <p>
 Trust through ethereum blockchain (experimental testnet) : <br>
     Register an account by signing your user and posting the signature on a network (twitter, facebook, reddit or your favorite BBS) <br>
-    Trust registry : <a href="https://explorer.bloc-fondations.fr/address/0x127B194f587aAB557de981aa68004B300F64C6A2" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x127B194f587aAB557de981aa68004B300F64C6A2</a> <br>
-    Certify / verify with a trusted user : <a href="https://explorer.bloc-fondations.fr/address/0x3ebcc333B0C6F0d9F5D19428b09a91Bc8Ab5385F" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x3ebcc333B0C6F0d9F5D19428b09a91Bc8Ab5385F</a> <br>
-    Datastore for certifications : <a href="https://explorer.bloc-fondations.fr/address/0xD4B80Ac7A811F83de2C11bD882604128986d75B5" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0xD4B80Ac7A811F83de2C11bD882604128986d75B5</a> <br>
+    Trust registry : <a href="https://explorer.bloc-fondations.fr/address/0xA2a71C1E6Db89B6A66e3F25dc6d1598Bd3D5eCda" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0xA2a71C1E6Db89B6A66e3F25dc6d1598Bd3D5eCda</a> <br>
+    Certify / verify with a trusted user : <a href="https://explorer.bloc-fondations.fr/address/0x16064326B6Af83C95f296bE5e613065213a257eD" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x16064326B6Af83C95f296bE5e613065213a257eD</a> <br>
+    Datastore for certifications : <a href="https://explorer.bloc-fondations.fr/address/0x9c1303CE94D50Be6968a999fCB4d49bf88686DEA" target="_blank" rel="noopener noreferrer">https://explorer.bloc-fondations.fr/address/0x9c1303CE94D50Be6968a999fCB4d49bf88686DEA</a> <br>
   </p>
 <p> 
 The tool below gives you Ethereum signature of a given message. Done with web3 libs via metamask (needs metamask installed). <br>
@@ -21,7 +21,10 @@ The tool below gives you Ethereum signature of a given message. Done with web3 l
 <button onClick="web3_metamask_login()">login</button> <br>
 <label for="tosign">message to sign :</label>
 <input type="text" id="tosign" name="tosign" size="32"></input>
-<button onClick="signMessage()">Sign</button> <br>
+<button onClick="signMessage()">Sign message</button> <br>
+<label for="filetosign">document to sign :</label>
+<input type="file" id="filetosign" name="filetosign" size="32"></input>
+<button onClick="signFile()">Sign file</button> <br>
 <label for="hash">message hash :</label>
 <textarea id="hash" name="hash" cols="40" rows="2" readonly="readonly"></textarea>
 <label for="sig">signature :</label>
@@ -31,11 +34,14 @@ The tool below gives you Ethereum signature of a given message. Done with web3 l
 <p>
 Signature verification
 </p>
-<label for="verifySig">signature to sig_verify :</label>
+<label for="verifySig">signature to verify :</label>
 <textarea id="verifySig" name="verifySig" cols="40" rows="4"></textarea> <br>
 <label for="toverify">message to verify :</label>
 <input type="text" id="toverify" name="toverify" size="32"></input>
 <button onClick="sig_verify()">verify</button> <br>
+<label for="filetoverify">File to verify :</label>
+<input type="file" id="filetoverify" name="filetoverify" size="32"></input>
+<button onClick="file_sig_verify()">verify</button> <br>
 <label for="verifyAdd">source :</label>
 <textarea id="verifyAdd" name="verifyAdd" cols="40" rows="1" readonly="readonly"></textarea>
 </pre>
@@ -46,6 +52,7 @@ Signature verification
   integrity="sha512-/PTXSvaFzmO4So7Ghyq+DEZOz0sNLU4v1DP4gMOfY3kFu9L/IKoqSHZ6lNl3ZoZ7wT20io3vu/U4IchGcGIhfw=="
   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.ethers.io/lib/ethers-5.6.4.umd.min.js" type="application/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/fs-@1.0.0/fs.min.js" type="application/javascript"></script>
 <script>
   function web3_check_metamask() {
     if (!window.ethereum) {
@@ -129,11 +136,78 @@ Signature verification
     // alert(signature);
 }
 
+async function signFile() {
+  if (!window.ethereum) return alert("Please Install Metamask");
+
+// connect and get metamask account
+const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+// message to sign
+//const message = document.getElementById("tosign").value;
+const fileInput = document.getElementById('filetosign');
+const selectedFile = fileInput.files[0];
+const reader = new FileReader();
+reader.onload = async function (event) {
+                const fileContent = event.target.result;
+                const buffer = new Uint8Array(fileContent);
+                const bufferHex = Array.from(buffer).map(byte => byte.toString(16).padStart(2, '0')).join('');
+                const hashedMessage = Web3.utils.sha3(`0x${bufferHex}`);
+                //const sha3Hash = Web3.utils.sha3(fileContent);
+                console.log({ hashedMessage });
+                document.getElementById("hash").value = hashedMessage;
+                
+                // sign hashed message
+                const signature = await ethereum.request({
+                  method: "personal_sign",
+                  params: [hashedMessage, accounts[0]],
+                });
+                console.log({ signature });
+                document.getElementById("sig").value = signature;
+
+// split signature
+                const r = signature.slice(0, 66);
+                const s = "0x" + signature.slice(66, 130);
+                const v = parseInt(signature.slice(130, 132), 16);
+                console.log({ r, s, v });
+            };
+//const hashedMessage = sha3Hash;
+reader.readAsArrayBuffer(selectedFile);
+//const message = "hello";
+//console.log({ message });
+
+// hash message
+//const hashedMessage = Web3.utils.sha3(message);
+
+
+//console.log({ hashedMessage });
+//document.getElementById("hash").value = hashedMessage;
+
+
+  
+}
+
 async function sig_verify() {
       document.getElementById("verifyAdd").value = await ethereum.request({
       method: "personal_ecRecover",
       params: [Web3.utils.sha3(document.getElementById("toverify").value), document.getElementById("verifySig").value],
     });
 
+  }
+
+async function file_sig_verify() {
+
+    const fileInput = document.getElementById('filetosign');
+    const selectedFile = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = async function (event) {
+                const fileContent = event.target.result;
+                const buffer = new Uint8Array(fileContent);
+                const bufferHex = Array.from(buffer).map(byte => byte.toString(16).padStart(2, '0')).join('');
+                const hashedMessage = Web3.utils.sha3(`0x${bufferHex}`);
+                document.getElementById("verifyAdd").value = await ethereum.request({
+                method: "personal_ecRecover",
+                params: [hashedMessage, document.getElementById("verifySig").value],
+                });
+              }
+              reader.readAsArrayBuffer(selectedFile);
   }
 </script>
