@@ -85,7 +85,7 @@ function addKYC (address _address)  public {
 
 function remID(address _address) public {
     require (auth.isTrusted(msg.sender));
-    require (!KYC[_address].validation);
+    require (KYC[_address].validation);
     KYC[_address].validation = false;
     emit revoke (_address, msg.sender);
 	}
